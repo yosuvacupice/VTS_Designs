@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Notifications</h2>
+
+{% for note in notifications %}
+
+<a href="{% url 'notification_read' note.id %}" style="text-decoration:none;">
+
+  <div class="notification_item {% if not note.is_read %}unread{% endif %}">
+    <p>
+      <i class="ri-user-3-fill notify-icon"></i>
+      <strong>{{ note.sender.username }}</strong> sent you a hire request
+    </p>
+    <small>{{ note.created_at|timesince }} ago</small>
+  </div>
+
+</a>
+
+{% empty %}
+  <p>No notifications</p>
+{% endfor %}
+
+
+{% endblock %}

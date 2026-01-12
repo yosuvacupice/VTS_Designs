@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+{% for proj in projects %}
+
+<div class="profile_page">
+
+  <!-- LEFT PROFILE -->
+  <div class="profile_left">
+
+    <div class="profile_card">
+      <div class="profile_cover"></div>
+
+      <img src="{% static 'img/header_user_profile.png' %}" class="profile_avatar">
+
+      <h3>{{ proj.user.get_full_name|default:proj.user.username }}</h3>
+      <p class="location">Chennai</p>
+
+      <div class="profile_stats">
+        <div>
+          <strong>20</strong>
+          <span>Appreciation</span>
+        </div>
+        <div>
+          <strong>20</strong>
+          <span>Followers</span>
+        </div>
+        <div>
+          <strong>20</strong>
+          <span>Project Views</span>
+        </div>
+      </div>
+
+      <div class="profile_actions">
+        <a href="{% url 'messages' %}" class="msg_btn">
+          Message
+        </a>
+
+        <a href="{% url 'hire_profile' proj.user.id %}" class="hire_btn">
+          Hire
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT PROJECT -->
+  <div class="profile_right">
+    <div class="project_grid">
+
+      {% with proj.images.all|first as img %}
+      <div class="project_item">
+
+        {% if img %}
+          <img src="{{ img.image.url }}">
+        {% else %}
+          <img src="{% static 'img/dummy_image.jpg' %}">
+        {% endif %}
+
+        <div class="project_overlay">
+          <h4>{{ proj.title }}</h4>
+          <p>{{ proj.description|truncatewords:15 }}</p>
+          <small>By {{ proj.user.username }}</small>
+        </div>
+
+      </div>
+      {% endwith %}
+
+    </div>
+  </div>
+
+</div>
+
+{% endfor %}
+
+{% endblock %}

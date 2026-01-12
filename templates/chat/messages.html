@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="messages-page">
+
+  <div class="messages-left">
+
+    <div class="messages-header">
+      <i class="ri-mail-line"></i>
+      <h3>Messages</h3>
+    </div>
+
+    <div class="message-tabs">
+      <span class="tab active">All</span>
+      <span class="tab">New</span>
+    </div>
+
+    <div class="message-users">
+      {% for msg in all_messages %}
+      <a href="{% url 'message_detail' msg.id %}" class="msg-row {% if not msg.is_read %}unread{% endif %}">
+          <img src="{% static 'img/header_user_profile.png' %}">
+          <div>
+              <strong>{{ msg.sender.username }}</strong>
+              <p>{{ msg.text|truncatechars:35 }}</p>
+          </div>
+      </a>
+      {% endfor %}
+    </div>
+    <a href="{% url 'compose_message' %}" class="compose-btn">
+      + Compose
+    </a>
+  </div>
+  <div class="messages-right"></div>
+
+</div>
+
+{% endblock %}

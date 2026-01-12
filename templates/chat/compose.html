@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="compose-page">
+
+  <h3>Compose Message</h3>
+
+  {% if error %}
+    <p style="color:red;">{{ error }}</p>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+
+    <label>To</label>
+    <input type="text" id="to_input" autocomplete="off" placeholder="Type username">
+    <input type="hidden" name="to_user" id="to_user_id">
+
+    <ul id="suggestions"></ul>
+
+    <label>Message</label>
+    <textarea name="text" rows="5" placeholder="Type your message" required></textarea>
+
+    <button type="submit">Send</button>
+  </form>
+
+</div>
+
+<script>
+const input = document.getElementById("to_input");
+const list = document.getElementById("suggestions");
+const hidden = document.getElementById("to_user_id");
+
+input.addEventListener("keyup", () => {
+  fetch(`/messages/search-users/?q=${input.value}`)
+    .then(res => res.json())
+    .then(data => {
+      list.innerHTML = "";
+      data.forEach(u => {
+        const li = document.createElement("li");
+        li.innerText = u.username;
+        li.onclick = () => {
+          input.value = u.username;
+          hidden.value = u.id;
+          list.innerHTML = "";
+        };
+        list.appendChild(li);
+      });
+    });
+});
+</script>
+
+{% endblock %}

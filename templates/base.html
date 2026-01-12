@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VTS Designers</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'img/favicon_image.png' %}">
+    <!-- GOOGLE FONT : INTER -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- ======================= ICONS ======================== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css">
+
+    <!-- ======================= CSS ======================== -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- ================= LEFT SIDEBAR ================= -->
+    <aside class="sidebar">
+        <div class="logo">
+            <img src="{% static 'img/logo.jpg' %}" class="logo_image">
+            <h3>VTS Designers</h3>
+        </div>
+
+        <nav class="menu">
+            <a href="/dashboard/" class="{% if request.path == '/dashboard/' %}active{% endif %}">
+                <i class="fa-solid fa-house"></i> Overview
+            </a>
+
+            <a href="/projects/add/" class="{% if '/projects/' in request.path %}active{% endif %}">
+                <i class="ri-upload-fill"></i> Projects
+            </a>
+
+
+            <a href="{% url 'profile' %}" class="{% if request.path == '/profile/' %}active{% endif %}">
+                <i class="ri-folder-fill"></i> Profile
+            </a>
+
+        </nav>
+    </aside>
+
+    <!-- ================= RIGHT SECTION ================= -->
+    <div class="main">
+
+        <!-- TOP BAR -->
+        <header class="topbar">
+            <div class="search-box">
+                <i class="ri-search-line"></i>
+                <input type="text" id="searchInput" placeholder="Search the designers">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+
+            <div class="top-actions">
+                <a href="{% url 'add_project' %}" class="share-btn">
+                    Share Your Work
+                </a>
+
+                <div class="icon-box">
+                    <a href="{% url 'notifications' %}">
+                        <i class="ri-notification-3-line"></i>
+                        {% if unread_notifications > 0 %}
+                            <span class="badge">{{ unread_notifications }}</span>
+                        {% endif %}
+                    </a>
+                </div>
+
+                <div class="icon-box">
+                   <a href="{% url 'messages' %}">
+                       <i class="ri-mail-line"></i>
+                       {% if unread_messages > 0 %}
+                           <span class="badge">{{ unread_messages }}</span>
+                       {% endif %}
+                   </a>
+                </div>
+
+                <img src="{% static 'img/header_user_profile.png' %}" class="profile-img">
+            </div>
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <main class="content">
+            {% block content %}
+            {% endblock %}
+        </main>
+
+    </div>
+</div>
+<script src="{% static 'js/search.js' %}"></script>
+</body>
+</html>

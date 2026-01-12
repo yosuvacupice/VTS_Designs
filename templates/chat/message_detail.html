@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>{{ message.sender.username }}</h3>
+
+<p>Message:{{ message.text }}</p>
+
+<small>Time:{{ message.created_at }}</small>
+
+{% endblock %}

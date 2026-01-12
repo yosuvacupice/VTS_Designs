@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="hire_form_page">
+
+  <div class="hire_header">
+    <img src="{% static 'img/header_user_profile.png' %}" class="hire_avatar">
+    <h2>Invite {{ receiver.username }}</h2>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <label>What are you Hiring For</label>
+    <input type="text" name="hiring_for" required>
+
+    <label>Choose the Categories</label>
+    <input type="text" name="category" required>
+
+    <label>What is your Budget?</label>
+    <input type="text" name="budget" required>
+
+    <label>Project Description</label>
+    <textarea name="project_description" rows="4" required></textarea>
+
+    <label>Add a Personal Note</label>
+    <textarea name="personal_note" rows="3"></textarea>
+
+    <label>I’m Hiring For</label>
+    <div class="radio_box">
+      <label>
+        <input type="radio" name="hiring_type" value="freelancing" checked>
+        Freelancing
+      </label>
+      <label>
+        <input type="radio" name="hiring_type" value="company">
+        Company
+      </label>
+    </div>
+
+    <div class="hire_now_send_btn">
+      <button type="submit" class="send_btn">Send Inquiry</button>
+    </div>
+
+  </form>
+
+</div>
+
+{% endblock %}

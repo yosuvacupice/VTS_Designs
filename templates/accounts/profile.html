@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="profile_wrapper">
+
+  <h2 class="profile_title">Profile</h2>
+
+  <form method="post" class="profile_form">
+    {% csrf_token %}
+
+    <div class="form_group">
+      <label>Name</label>
+      <input type="text" value="{{ request.user.username }}" disabled>
+    </div>
+
+    <div class="form_group">
+      <label>Occupation</label>
+      <input type="text" name="occupation" value="{{ profile.occupation }}">
+    </div>
+
+    <div class="form_group">
+      <label>Company Name</label>
+      <input type="text" name="company" value="{{ profile.company }}">
+    </div>
+
+    <div class="form_group">
+      <label>Location</label>
+      <input type="text" name="location" value="{{ profile.location }}">
+    </div>
+
+    <div class="form_group">
+      <label>Website URL</label>
+      <input type="url" name="website" value="{{ profile.website }}">
+    </div>
+
+    <div class="form_group">
+      <label>About Me Title</label>
+      <input type="text" name="about_title" value="{{ profile.about_title }}">
+    </div>
+
+    <div class="form_group">
+      <label>Projects Description</label>
+      <textarea name="project_description" rows="5">
+      {{ profile.project_description }}</textarea>
+    </div>
+    
+    <div id="custom-sections"></div>
+
+    <button type="button" id="add-section-btn" class="add_section_btn">
+      + Add Custom Section
+    </button>
+
+    <button type="submit" class="profile_submit">
+      Submit
+    </button>
+
+  </form>
+
+</div>
+<script src="{% static 'js/profile.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="notification_read_page">
+
+  <h2>Notification Details</h2>
+
+  <div class="notification_card">
+    <p class="notification_text">
+      {{ notification.text }}
+    </p>
+
+    <small class="time">Time: 
+      {{ notification.created_at|timesince }} ago
+    </small>
+  </div>
+
+  <br>
+
+  <a href="{% url 'notifications' %}" class="back_btn">
+    ← Back to Notifications
+  </a>
+
+</div>
+
+{% endblock %}

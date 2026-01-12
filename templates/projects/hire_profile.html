@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="hire_wrapper">
+
+  <div class="hire_top">
+
+    <div class="hire_left_info">
+      <div>
+        <img src="{% static 'img/header_user_profile.png' %}" class="hire_profile_img">
+
+        <div class="hire_text">
+          <h3>{{ last_project.title }}</h3>
+          <p>
+            {{ profile_user.username }}
+            <span class="edit_text">Edit Projects</span>
+          </p>
+        </div>
+      </div>
+
+      <a href="{% url 'hire_now' profile_user.id %}" class="hire_now_btn">
+          <img src="{% static 'img/header_user_profile.png' %}">
+          Hire Now
+      </a>
+    </div>
+    
+    <div class="hire_project_image">
+
+      {% if last_project %}
+        {% with last_project.images.all|first as img %}
+          {% if img %}
+            <img src="{{ img.image.url }}" alt="project image">
+          {% else %}
+            <p>No image uploaded</p>
+          {% endif %}
+        {% endwith %}
+      {% else %}
+        <p>No projects yet</p>
+      {% endif %}
+
+    </div>
+
+
+</div>
+
+{% endblock %}

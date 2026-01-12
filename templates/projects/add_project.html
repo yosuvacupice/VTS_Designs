@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="add_project_page">
+
+  <!-- ================= PROJECT FORM ================= -->
+  <div class="add_project_card">
+
+    <div class="add_project_header">
+      <h3>Project Details</h3>
+      <p>Fill in the information about your design project</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="hidden" name="is_draft" id="is_draft" value="false">
+      <label class="form_label">Project Images</label>
+      <div id="drop-area" class="image_upload_box">
+        <i class="ri-upload-cloud-fill upload_icon"></i>
+        <p><strong>Drop your images here</strong></p>
+        <small>or click to browse files</small>
+        <span>PNG, JPG, GIF up to 10MB each</span>
+        <input type="file" id="fileElem" name="images" multiple>
+        <div id="preview" class="image_preview"></div>
+      </div>
+
+      <div class="two_grid">
+        <div>
+          <label>Project Title</label>
+          <input type="text" name="title" placeholder="Enter project title" required>
+        </div>
+
+        <div>
+          <label>Category</label>
+          <select name="category">
+            <option>Select category</option>
+            <option>UI Design</option>
+            <option>Mobile App</option>
+            <option>Web App</option>
+          </select>
+        </div>
+      </div>
+
+      <label>Description</label>
+      <textarea name="description" placeholder="Describe your project, inspiration, and design process..."></textarea>
+
+      <label>Tags</label>
+      <div class="tags_box">
+        <span class="tag">UI Design</span>
+        <span class="tag">Mobile App</span>
+        <span class="tag">Minimalist</span>
+        <input type="text" name="tags" placeholder="Add tag...">
+      </div>
+
+      <div class="three_grid">
+        <div>
+          <label>Visibility</label>
+          <select name="visibility">
+            <option value="public">Public</option>
+            <option value="private">Private</option>
+          </select>
+        </div>
+
+        <div>
+          <label>License</label>
+          <select name="license">
+            <option value="all">All Rights Reserved</option>
+            <option value="free">Free to Use</option>
+          </select>
+        </div>
+
+        <div class="checkbox_box">
+          <h3>Allow Downloads</h3>
+          <label>
+            <input type="checkbox" name="allow_download">
+            Enable downloads
+          </label>
+        </div>
+      </div>
+
+      <div class="form_actions">
+        <button type="button" class="draft_btn" onclick="saveDraft()">Save as Draft</button>
+        <div class="right_actions">
+          <a href="#" class="cancel_link">Cancel</a>
+          <button type="submit" class="publish_btn">Publish Project</button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- ================= RECENT UPLOADS ================= -->
+  <div class="recent_uploads">
+
+    <h3>Recent Uploads</h3>
+
+    <div class="projects_grid">
+      {% for project in recent_projects %}
+        <div class="project_card">
+
+          {% with project.images.all|first as img %}
+            {% if img %}
+              <img src="{{ img.image.url }}">
+            {% else %}
+              <img src="{% static 'img/dummy_image.jpg' %}">
+            {% endif %}
+          {% endwith %}
+
+          <h4>{{ project.title }}</h4>
+          <small>{{ project.created_at|timesince }} ago</small>
+
+          <div class="recent_uploads_card_container">
+            {% if project.visibility == "public" %}
+              <span class="status published">Published</span>
+            {% else %}
+              <span class="status draft">Draft</span>
+            {% endif %}
+
+            <div class="card_actions">
+              <a href="{% url 'edit_project' project.id %}"><i class="ri-edit-box-line"></i></a>
+              <a href="{% url 'delete_project' project.id %}" onclick="return confirm('Delete project?')"><i class="ri-delete-bin-line"></i></a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+
+</div>
+
+<script src="{% static 'js/project_upload.js' %}"></script>
+{% endblock %}

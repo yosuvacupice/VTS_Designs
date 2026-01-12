@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="dashboard">
+    <div class="dashboard-container">
+        <div class="dashboard-card">
+            <p>Total Projects</p>
+            <h3>{{ total_projects }}</h3>
+            <small>From your uploads</small>
+            <i class="ri-folder-fill"></i>
+        </div>
+
+        <div class="dashboard-card">
+            <p>Messages</p>
+            <h3>{{ total_messages }}</h3>
+            <small>Inbox messages</small>
+            <i class="ri-mail-fill"></i>
+        </div>
+
+        <div class="dashboard-card">
+            <p>Candidates</p>
+            <h3>{{ total_candidates }}</h3>
+            <small>Total users</small>
+            <i class="ri-team-fill"></i>
+        </div>
+
+        <div class="dashboard-card">
+            <p>Notifications</p>
+            <h3>{{ total_notifications }}</h3>
+            <small>Updates & alerts</small>
+            <i class="ri-notification-3-fill"></i>
+        </div>
+
+    </div>
+
+    <!-- ================= DASHBOARD BODY ================= -->
+    <div class="dashboard-body">
+        <div class="dashboard-main">
+
+            <!-- ===== UPLOAD BOX ===== -->
+            <div class="upload-box">
+
+                <div class="upload-header">
+                    <h3>Upload New Project</h3>
+                    <a href="/projects/add/" class="new-project-btn">+ New Project</a>
+                </div>
+
+                <div class="upload-area">
+                    <i class="ri-upload-cloud-fill"></i>
+                    <p>Drop your files here</p>
+                    <small>or click to browse</small><br><br>
+                    <a href="/projects/add/" class="choose-btn">Choose Files</a>
+                </div>
+
+                <div class="upload-footer">
+                    <div>
+                        <h2>Project Title</h2>
+                        <input type="text" placeholder="Enter Project Title">
+                    </div>
+                    <div>
+                        <h2>Category</h2>
+                        <select>
+                            <option>Web Design</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ========== RIGHT SIDE AREA ========== -->
+        <div class="dashboard-side">
+            <div class="side-box">
+                <div class="side-header">
+                    <h4>Recent Messages</h4>
+                    <a href="/messages/">View All</a>
+                </div>
+
+                {% for msg in recent_messages %}
+                    <div class="message-item">
+                        <img
+                          src="{% if msg.sender.profile.image %}
+                               {{ msg.sender.profile.image.url }}
+                               {% else %}
+                               {% static 'img/header_user_profile.png' %}
+                               {% endif %}"
+                          class="message-avatar">
+
+                        <div class="message-text">
+                            <strong>{{ msg.sender.username }}</strong>
+                            <p>{{ msg.text|truncatechars:45 }}</p>
+                            <small>{{ msg.created_at|timesince }} ago</small>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>No messages</p>
+                {% endfor %}
+            </div>
+
+            <!-- ===== Notifications ===== -->
+            <div class="side-box">
+                <div class="side-header">
+                    <h4>Notifications</h4>
+                    <a href="{% url 'notifications' %}">
+                        <i class="ri-arrow-right-up-box-line"></i>
+                    </a>
+                </div>
+                {% for note in recent_notifications %}
+                    <div class="notification-item">
+                        <i class="ri-user-3-fill notify-icon"></i>
+                        <div>
+                            <p>{{ note.text }}</p>
+                            <small>{{ note.created_at|timesince }} ago</small>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>No notifications</p>
+                {% endfor %}
+            </div>
+            <div class="side-box">
+
+                <div class="side-header">
+                    <h4>Available Candidates</h4>
+                </div>
+
+                {% for user in available_candidates %}
+                <div class="candidate-item">
+                    <img src="{% static 'img/header_user_profile.png' %}" alt="user">
+
+                    <div class="candidate-info">
+                        <strong>{{ user.username }}</strong>
+                        <small>UI/UX Designer</small>
+                    </div>
+
+                        <a href="{% url 'hire_profile' user.id %}" class="hire-btn">
+                        Hire
+                        </a>
+                    </div>
+                    {% empty %}
+                    <p>No candidates available</p>
+                {% endfor %}
+                                
+                {% for user in available_candidates %}
+                <div class="candidate-item">
+                    <img src="{% static 'img/header_user_profile.png' %}" alt="user">
+
+                    <div class="candidate-info">
+                        <strong>{{ user.username }}</strong>
+                        <small>UI/UX Designer</small>
+                    </div>
+
+                    <a href="{% url 'hire_profile' user.id %}" class="hire-btn">Hire</a>
+                </div>
+                {% empty %}
+                    <p>No candidates available</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

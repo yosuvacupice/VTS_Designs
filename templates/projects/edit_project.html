@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="add_project_page">
+
+  <div class="add_project_card">
+
+    <div class="add_project_header">
+      <h3>Edit Project</h3>
+      <p>Update your project details</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <label class="form_label">Project Images</label>
+      <div class="image_upload_box">
+        <input type="file" name="images" multiple>
+        <small>Upload new images</small>
+      </div>
+
+      <div class="two_grid">
+        <div>
+          <label>Project Title</label>
+          <input type="text" name="title" value="{{ project.title }}" required>
+        </div>
+
+        <div>
+          <label>Category</label>
+          <select name="category">
+            <option {% if project.category == "UI Design" %}selected{% endif %}>UI Design</option>
+            <option {% if project.category == "Mobile App" %}selected{% endif %}>Mobile App</option>
+            <option {% if project.category == "Web App" %}selected{% endif %}>Web App</option>
+          </select>
+        </div>
+      </div>
+
+      <label>Description</label>
+      <textarea name="description">{{ project.description }}</textarea>
+
+      <label>Tags</label>
+      <input type="text" name="tags" value="{{ project.tags }}">
+
+      <div class="three_grid">
+        <div>
+          <label>Visibility</label>
+          <select name="visibility">
+            <option value="public" {% if project.visibility == "public" %}selected{% endif %}>Public</option>
+            <option value="private" {% if project.visibility == "private" %}selected{% endif %}>Private</option>
+          </select>
+        </div>
+
+        <div>
+          <label>License</label>
+          <select name="license">
+            <option value="all" {% if project.license == "all" %}selected{% endif %}>All Rights Reserved</option>
+            <option value="free" {% if project.license == "free" %}selected{% endif %}>Free to Use</option>
+          </select>
+        </div>
+
+        <div class="checkbox_box">
+          <label>
+            <input type="checkbox" name="allow_download"
+              {% if project.allow_download %}checked{% endif %}>
+            Enable downloads
+          </label>
+        </div>
+      </div>
+
+      <div class="form_actions">
+  <button type="button" class="draft_btn" onclick="saveDraft()">Save as Draft</button>
+
+  <div class="right_actions">
+    <a href="{% url 'add_project' %}" class="cancel_link">Cancel</a>
+    <button type="submit" class="publish_btn">Update Project</button>
+  </div>
+</div>
+
+
+    </form>
+
+  </div>
+
+</div>
+<script>
+function saveDraft(){
+  document.getElementById("is_draft").value = "true";
+  document.querySelector("form").submit();
+}
+</script>
+
+{% endblock %}

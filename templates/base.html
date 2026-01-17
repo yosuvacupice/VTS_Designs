@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>VTS Designers</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="max-age=86400">
     <link rel="icon" type="image/png" href="{% static 'img/favicon_image.png' %}">
     <!-- GOOGLE FONT : INTER -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -77,8 +78,15 @@
                        {% endif %}
                    </a>
                 </div>
+                
+                <a href="{% url 'profile' %}">
+                    {% if user.profile.image %}
+                        <img src="{{ user.profile.image.url }}" class="header_profile_img">
+                    {% else %}
+                        <img src="{% static 'img/header_user_profile.png' %}" class="profile-img">
+                    {% endif %}
+                </a>
 
-                <img src="{% static 'img/header_user_profile.png' %}" class="profile-img">
             </div>
         </header>
 

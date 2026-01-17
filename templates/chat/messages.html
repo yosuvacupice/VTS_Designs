@@ -5,6 +5,7 @@
 
 <div class="messages-page">
 
+  <!-- LEFT -->
   <div class="messages-left">
 
     <div class="messages-header">
@@ -13,27 +14,39 @@
     </div>
 
     <div class="message-tabs">
-      <span class="tab active">All</span>
-      <span class="tab">New</span>
+      <span class="tab active" data-tab="all">All</span>
+      <span class="tab" data-tab="new">New</span>
     </div>
 
     <div class="message-users">
+
       {% for msg in all_messages %}
-      <a href="{% url 'message_detail' msg.id %}" class="msg-row {% if not msg.is_read %}unread{% endif %}">
-          <img src="{% static 'img/header_user_profile.png' %}">
-          <div>
-              <strong>{{ msg.sender.username }}</strong>
-              <p>{{ msg.text|truncatechars:35 }}</p>
-          </div>
-      </a>
+      <div
+        class="msg-row {% if not msg.is_read %}unread{% endif %}"
+        data-id="{{ msg.id }}"
+        data-read="{{ msg.is_read|yesno:'1,0' }}"
+      >
+        <img src="{% static 'img/header_user_profile.png' %}">
+        <div>
+          <strong>{{ msg.sender.username }}</strong>
+          <p>{{ msg.text|truncatechars:35 }}</p>
+        </div>
+      </div>
       {% endfor %}
+
     </div>
+
     <a href="{% url 'compose_message' %}" class="compose-btn">
       + Compose
     </a>
   </div>
-  <div class="messages-right"></div>
+
+  <!-- RIGHT PREVIEW -->
+  <div class="messages-right" id="message-preview">
+    <div id="message-preview"></div>
+  </div>
 
 </div>
+<script src="{% static 'js/messages.js' %}"></script>
 
 {% endblock %}

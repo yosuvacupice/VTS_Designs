@@ -39,35 +39,55 @@
         <div class="dashboard-main">
 
             <!-- ===== UPLOAD BOX ===== -->
-            <div class="upload-box">
-
+            <form method="post"
+                action="{% url 'add_project' %}"
+                enctype="multipart/form-data"
+                class="upload-box"
+                id="dashboardUploadForm">
+                {% csrf_token %}
                 <div class="upload-header">
                     <h3>Upload New Project</h3>
-                    <a href="/projects/add/" class="new-project-btn">+ New Project</a>
+                    <button type="submit" class="new-project-btn">
+                        + New Project
+                    </button>
                 </div>
-
-                <div class="upload-area">
+                <div class="upload-area" id="dash-drop-area">
                     <i class="ri-upload-cloud-fill"></i>
                     <p>Drop your files here</p>
                     <small>or click to browse</small><br><br>
-                    <a href="/projects/add/" class="choose-btn">Choose Files</a>
+                    <button type="button"
+                            class="choose-btn"
+                            onclick="document.getElementById('dashboardFileInput').click()">
+                        Choose Files
+                    </button>
+                    <input type="file"
+                        id="dashboardFileInput"
+                        name="images"
+                        multiple
+                        hidden>
+                        <input type="hidden" name="visibility" value="public">
+                        <!-- IMAGE PREVIEW -->
+                        <div id="dashboardPreview"></div>
                 </div>
-
                 <div class="upload-footer">
                     <div>
                         <h2>Project Title</h2>
-                        <input type="text" placeholder="Enter Project Title">
+                        <input type="text"
+                            name="title"
+                            required
+                            placeholder="Enter Project Title">
                     </div>
                     <div>
                         <h2>Category</h2>
-                        <select>
-                            <option>Web Design</option>
+                        <select name="category" required>
+                            <option value="">Select</option>
+                            <option>UI Design</option>
+                            <option>Web App</option>
+                            <option>Mobile App</option>
                         </select>
                     </div>
                 </div>
-
-            </div>
-
+            </form>
         </div>
 
         <!-- ========== RIGHT SIDE AREA ========== -->
@@ -160,5 +180,6 @@
         </div>
     </div>
 </div>
+<script src="{% static 'js/dashboard.js' %}"></script>
 
 {% endblock %}

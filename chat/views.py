@@ -55,9 +55,18 @@ def messages_view(request):
 @login_required
 def message_detail(request, id):
     message = get_object_or_404(Message, id=id, receiver=request.user)
+
     if not message.is_read:
         message.is_read = True
         message.save()
+
+    # AJAX preview
+    if request.GET.get("ajax"):
+        return JsonResponse({
+            "sender": message.sender.username,
+            "text": message.text,
+            "time": message.created_at.strftime("%d %b %Y, %I:%M %p")
+        })
     return render(request, 'chat/message_detail.html', {
         'message': message
     })

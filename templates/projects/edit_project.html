@@ -12,6 +12,12 @@
       <p>Update your project details</p>
     </div>
 
+    {% if error %}
+      <p style="color:red; text-align:center; margin-bottom:15px;">
+        {{ error }}
+      </p>
+    {% endif %}
+
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
 
@@ -30,9 +36,9 @@
         <div>
           <label>Category</label>
           <select name="category">
-            <option {% if project.category == "UI Design" %}selected{% endif %}>UI Design</option>
-            <option {% if project.category == "Mobile App" %}selected{% endif %}>Mobile App</option>
-            <option {% if project.category == "Web App" %}selected{% endif %}>Web App</option>
+            <option value="UI Design" {% if project.category == "UI Design" %}selected{% endif %}>UI Design</option>
+            <option value="Mobile App" {% if project.category == "Mobile App" %}selected{% endif %}>Mobile App</option>
+            <option value="Web App" {% if project.category == "Web App" %}selected{% endif %}>Web App</option>
           </select>
         </div>
       </div>

@@ -1,54 +1,105 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Project, ProjectImage
+from django.views.decorators.cache import never_cache
 from django.contrib.auth.models import User
-from .models import HireInquiry
+from .models import Project, ProjectImage, HireInquiry
 from notifications.models import Notification
+import uuid
+import re
+
+MAX_IMAGE_SIZE = 10 * 1024 * 1024
+
 
 @login_required
+@never_cache
 def add_project(request):
     if request.method == "POST":
         is_draft = request.POST.get("is_draft")
-        if is_draft == "true":
-            visibility = "private"
-        else:
-            visibility = request.POST.get("visibility")
+        token = uuid.uuid4()
+        images = request.FILES.getlist("images")
+
+        # ✅ DUPLICATE PUBLISH STOP
+        if token and Project.objects.filter(publish_token=token).exists():
+            return redirect("add_project")
+
+        if is_draft != "true" and not images:
+            recent_projects = Project.objects.filter(user=request.user).order_by("-created_at")[:3]
+            return render(request, "projects/add_project.html", {
+                "recent_projects": recent_projects,
+                "error": "Project image is required to publish the project"
+            })
+
+        for img in images:
+            if img.size > MAX_IMAGE_SIZE:
+                recent_projects = Project.objects.filter(user=request.user).order_by("-created_at")[:3]
+                return render(request, "projects/add_project.html", {
+                    "recent_projects": recent_projects,
+                    "error": "Image size must be less than 10MB"
+                })
+
+            visibility = (
+                "private"
+                if is_draft == "true"
+                else request.POST.get("visibility", "public")
+            )
+
         project = Project.objects.create(
             user=request.user,
             title=request.POST.get("title"),
             category=request.POST.get("category"),
-            description=request.POST.get("description"),
-            tags=request.POST.get("tags"),
+            description=request.POST.get("description", ""),
+            tags=clean_tags(request.POST.get("tags", "")),
             visibility=visibility,
-            license=request.POST.get("license"),
-            allow_download=True if request.POST.get("allow_download") else False
+            license=request.POST.get("license", "all"),
+            allow_download=True if request.POST.get("allow_download") else False,
+            publish_token=token   # ✅ save token
         )
-        for img in request.FILES.getlist("images"):
+
+        for img in images:
             ProjectImage.objects.create(project=project, image=img)
+
         if is_draft == "true":
             return redirect("add_project")
-        else:
-            return redirect("project_profile", project.id)
-    recent_projects = Project.objects.filter(
-        user=request.user
-    ).order_by("-created_at")[:3]
+
+        return redirect("project_profile", project.id)
+
+    recent_projects = Project.objects.filter(user=request.user).order_by("-created_at")[:3]
     return render(request, "projects/add_project.html", {
         "recent_projects": recent_projects
     })
+
+def clean_tags(raw_tags):
+    tag_list = [t.strip() for t in raw_tags.split(",") if t.strip()]
+    unique_tags = []
+    for t in tag_list:
+        if len(t) < 3:
+            continue
+        if not re.match(r'^[A-Za-z ]+$', t):
+            continue
+        if t.lower() not in [x.lower() for x in unique_tags]:
+            unique_tags.append(t)
+    return ", ".join(unique_tags)
 
 @login_required
 def edit_project(request, id):
     project = get_object_or_404(Project, id=id, user=request.user)
     if request.method == "POST":
+        images = request.FILES.getlist("images")
+        for img in images:
+            if img.size > MAX_IMAGE_SIZE:
+                return render(request, "projects/edit_project.html", {
+                    "project": project,
+                    "error": "Image size must be less than 10MB"
+                })
         project.title = request.POST.get("title")
         project.category = request.POST.get("category")
         project.description = request.POST.get("description")
-        project.tags = request.POST.get("tags")
+        project.tags = clean_tags(request.POST.get("tags", ""))
         project.visibility = request.POST.get("visibility")
         project.license = request.POST.get("license")
         project.allow_download = True if request.POST.get("allow_download") else False
         project.save()
-        for img in request.FILES.getlist("images"):
+        for img in images:
             ProjectImage.objects.create(project=project, image=img)
         return redirect("add_project")
     return render(request, "projects/edit_project.html", {
@@ -61,6 +112,7 @@ def delete_project(request, id):
     project = get_object_or_404(Project, id=id, user=request.user)
     project.delete()
     return redirect("add_project")
+
 @login_required
 def project_profile(request, id):
     all_public_projects = Project.objects.filter(
@@ -84,16 +136,29 @@ def hire_profile(request, user_id):
         "last_project": last_project
     })
 
+ALLOWED_CATEGORIES = ["UI Design", "Mobile App", "Web App"]
 @login_required
 def hire_now(request, user_id):
     receiver = get_object_or_404(User, id=user_id)
     if request.method == "POST":
+        category = request.POST.get("category")
+        budget = request.POST.get("budget")
+        if category not in ALLOWED_CATEGORIES:
+            return render(request, "projects/hire_now.html", {
+                "receiver": receiver,
+                "error": "Please select a valid category"
+            })
+        if not budget or not budget.isdigit():
+            return render(request, "projects/hire_now.html", {
+                "receiver": receiver,
+                "error": "Please enter a valid numeric budget"
+            })
         inquiry = HireInquiry.objects.create(
             sender=request.user,
             receiver=receiver,
             hiring_for=request.POST.get("hiring_for"),
-            category=request.POST.get("category"),
-            budget=request.POST.get("budget"),
+            category=category,
+            budget=budget,
             project_description=request.POST.get("project_description"),
             personal_note=request.POST.get("personal_note"),
             hiring_type=request.POST.get("hiring_type"),

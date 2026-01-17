@@ -30,6 +30,7 @@ body {
     display: block;
     padding: 8px 0;
     font-weight: 500;
+    margin-top: 20px;
 }
 
 .login-box input {
@@ -37,7 +38,6 @@ body {
     padding: 12px;
     border-radius: 10px;
     border: 1px solid black;
-    margin-bottom: 20px;
     background: transparent;
     font-family: 'Inter', sans-serif;
 }
@@ -46,7 +46,7 @@ body {
     color: black;
 }
 
-.login-box div{
+.login-btn-wrapper{
     max-width: 200px;
     width: 100%;
     margin: 0 auto;
@@ -64,7 +64,27 @@ body {
 }
 
 .login-btn:hover {
-    background: #e60078;
+    background: #ff0488;
+}
+
+.password-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.password-wrapper input {
+    width: 100%;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 20px;
+    color: #555;
 }
 
 @media (max-width: 767px){

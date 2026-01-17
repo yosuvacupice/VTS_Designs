@@ -219,6 +219,7 @@ input{
     height: 50px;
     border-radius: 50%;
     object-fit: cover;
+    cursor: pointer;
 }
 
 /* ================= CONTENT ================= */
@@ -390,6 +391,7 @@ input{
     color: white;
     padding: 8px 14px;
     border-radius: 8px;
+    border: none;
     font-size: 14px;
 }
 
@@ -418,6 +420,7 @@ input{
     color: white;
     padding: 8px 16px;
     border-radius: 8px;
+    border: none;
     font-size: 14px;
 }
 
@@ -445,7 +448,6 @@ input{
     border: 1px solid #ccc;
     padding: 8px;
     border-radius: 8px;
-    pointer-events: none;
 }
 
 /* ================= RIGHT SIDE ================= */
@@ -1093,12 +1095,28 @@ input{
 }
 
 .send_btn {
-  background: #ff0080;
+  background: var(--hot-pink-color);
   color: white;
   padding: 12px 26px;
   border: none;
   border-radius: 10px;
   font-size: 16px;
+}
+
+.hire_form_page select {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0 16px 0;
+  border-radius: 10px;
+  border: 1px solid black;
+  background: white;
+  font-family: inherit;
+}
+
+.hire_form_page select option{
+  font-family: inherit;
+  font-size: var(--font-sl);
+  font-weight: 500;
 }
 
 /* ================= messages.html ================ */
@@ -1141,7 +1159,7 @@ input{
   font-weight: 600;
 }
 
-.message-users {
+.message-user {
   margin-top: 15px;
 }
 
@@ -1150,6 +1168,10 @@ input{
   gap: 12px;
   align-items: center;
   padding: 10px 0;
+  cursor: pointer;
+}
+
+.message-users{
   cursor: pointer;
 }
 
@@ -1176,11 +1198,6 @@ input{
   font-weight: 500;
 }
 
-.messages-right {
-  flex: 1;
-  background: #fff;
-}
-
 .msg-row {
   display: flex;
   gap: 10px;
@@ -1200,12 +1217,46 @@ input{
   font-weight: 400;
 }
 
+.messages-right {
+  flex: 1;
+  background: #ffffff;
+  padding: 30px;
+  border-left: 1px solid #eee;
+}
+
+#message-preview {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+#message-preview h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+#message-preview p {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+#message-preview small {
+  color: #888;
+  font-size: 13px;
+}
+
+.messages-right::before {
+  content: "Select a message to read";
+  color: #aaa;
+  font-size: 16px;
+}
 /* ================= compose.html ================ */
 .compose-page{
   background-color: var(--light-cream-color);
   width: fit-content;
   padding: 50px;
-  height: 60vh;
   max-width: 400px;
   width: 100%;
 }
@@ -1224,6 +1275,7 @@ input{
   border-radius: 10px;
   padding: 10px;
   margin: 10px 0;
+  font-family: var(--font-family);
 }
 
 #suggestions{
@@ -1328,12 +1380,13 @@ input{
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 14px;
+  font-family: var(--font-family);
 }
 
 .profile_submit{
   margin-top: 20px;
   align-self: center;
-  background: #ff4d4d;
+  background: var(--hot-pink-color);
   color: #fff;
   padding: 12px 40px;
   border: none;
@@ -1358,8 +1411,12 @@ input{
   background: #ff851b;
 }
 
-.custom_section{
-  margin-top: 20px;
+.custom_section {
+  margin-top: 25px;
+  padding: 20px;
+  border: 1px dashed #ddd;
+  border-radius: 10px;
+  background: #fffaf3;
 }
 
 .custom_section input,
@@ -1369,6 +1426,7 @@ input{
   border-radius: 8px;
   border: 1px solid #ccc;
   margin-bottom: 10px;
+  font-family: var(--font-family);
 }
 
 /* ================= search-box ================= */

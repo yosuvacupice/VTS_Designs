@@ -7,6 +7,7 @@
     <title>Login | VTS Designs</title>
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
     <link rel="icon" type="image/png" href="{% static 'img/favicon_image.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 </head>
 <body>
 
@@ -23,12 +24,30 @@
             {% csrf_token %}
 
             <label>Email Address</label>
-            <input type="text" name="username" placeholder="Enter your Email Id">
+            <input 
+                type="email"
+                name="username"
+                placeholder="Enter your Email Id"
+                maxlength="50"
+                required
+            >
 
             <label>Password</label>
-            <input type="password" name="password" placeholder="Enter your Password">
 
-            <div>
+            <div class="password-wrapper">
+                <input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="Enter your Password"
+                minlength="8"
+                maxlength="20"
+                required
+                >
+                <i class="ri-eye-line toggle-password" id="toggleIcon" onclick="togglePassword()"></i>
+            </div>
+
+            <div class="login-btn-wrapper">
                 <button class="login-btn">Login</button>
             </div>
         </form>
@@ -36,5 +55,21 @@
     </div>
 </div>
 
+<script>
+function togglePassword() {
+    const pwd = document.getElementById("password");
+    const icon = document.getElementById("toggleIcon");
+
+    if (pwd.type === "password") {
+        pwd.type = "text";
+        icon.classList.remove("ri-eye-line");
+        icon.classList.add("ri-eye-off-line");
+    } else {
+        pwd.type = "password";
+        icon.classList.remove("ri-eye-off-line");
+        icon.classList.add("ri-eye-line");
+    }
+}
+</script>
 </body>
 </html>

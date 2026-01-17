@@ -13,7 +13,13 @@
       <p>Fill in the information about your design project</p>
     </div>
 
-    <form method="post" enctype="multipart/form-data">
+    {% if error %}
+      <p style="color:red; text-align:center; margin-bottom:15px;">
+        {{ error }}
+      </p>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" autocomplete="off">
       {% csrf_token %}
       <input type="hidden" name="is_draft" id="is_draft" value="false">
       <label class="form_label">Project Images</label>
@@ -51,7 +57,15 @@
         <span class="tag">UI Design</span>
         <span class="tag">Mobile App</span>
         <span class="tag">Minimalist</span>
-        <input type="text" name="tags" placeholder="Add tag...">
+        <input
+          type="text"
+          name="tags"
+          id="tagsInput"
+          placeholder="Add tag..."
+        >
+        <small id="tagError" style="color:red; display:none;">
+          This tag already exists or is invalid.
+        </small>
       </div>
 
       <div class="three_grid">
@@ -103,8 +117,6 @@
           {% with project.images.all|first as img %}
             {% if img %}
               <img src="{{ img.image.url }}">
-            {% else %}
-              <img src="{% static 'img/dummy_image.jpg' %}">
             {% endif %}
           {% endwith %}
 

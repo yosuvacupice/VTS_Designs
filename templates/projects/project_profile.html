@@ -54,9 +54,7 @@
       <div class="project_item">
 
         {% if img %}
-          <img src="{{ img.image.url }}">
-        {% else %}
-          <img src="{% static 'img/dummy_image.jpg' %}">
+          <img src="{{ img.image.url }}" loading="lazy">
         {% endif %}
 
         <div class="project_overlay">

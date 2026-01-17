@@ -10,17 +10,34 @@
     <h2>Invite {{ receiver.username }}</h2>
   </div>
 
+  {% if error %}
+    <p style="color:red; text-align:center; margin-bottom:10px;">
+      {{ error }}
+    </p>
+  {% endif %}
+
   <form method="post">
     {% csrf_token %}
 
     <label>What are you Hiring For</label>
     <input type="text" name="hiring_for" required>
 
-    <label>Choose the Categories</label>
-    <input type="text" name="category" required>
+    <label>Choose the Category</label>
+    <select name="category" required>
+      <option value="">Select category</option>
+      <option value="UI Design">UI Design</option>
+      <option value="Mobile App">Mobile App</option>
+      <option value="Web App">Web App</option>
+    </select>
 
     <label>What is your Budget?</label>
-    <input type="text" name="budget" required>
+    <input
+      type="number"
+      name="budget"
+      min="1"
+      step="1"
+      required
+    >
 
     <label>Project Description</label>
     <textarea name="project_description" rows="4" required></textarea>

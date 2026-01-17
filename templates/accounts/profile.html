@@ -6,6 +6,14 @@
 
   <h2 class="profile_title">Profile</h2>
 
+  {% if messages %}
+    {% for message in messages %}
+      <p style="color:red; margin-bottom:10px;">
+        {{ message }}
+      </p>
+    {% endfor %}
+  {% endif %}
+
   <form method="post" class="profile_form">
     {% csrf_token %}
 
@@ -35,7 +43,7 @@
     </div>
 
     <div class="form_group">
-      <label>About Me Title</label>
+      <label>About Title</label>
       <input type="text" name="about_title" value="{{ profile.about_title }}">
     </div>
 

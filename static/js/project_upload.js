@@ -43,3 +43,26 @@ function saveDraft(){
   document.getElementById("is_draft").value = "true";
   document.querySelector("form").submit();
 }
+
+const tagsInput = document.getElementById("tagsInput");
+const error = document.getElementById("tagError");
+const existingTags = ["ui design", "mobile app", "minimalist"];
+tagsInput.addEventListener("blur", () => {
+  const value = tagsInput.value.trim().toLowerCase();
+  if (value.length < 3 || existingTags.includes(value)) {
+    error.style.display = "block";
+  } else {
+    error.style.display = "none";
+  }
+});
+
+if (window.history.replaceState) {
+  window.history.replaceState(null, null, window.location.href);
+}
+
+window.addEventListener("pageshow", function (event) {
+  if (event.persisted) {
+    document.querySelector("form").reset();
+    preview.innerHTML = "";
+  }
+});

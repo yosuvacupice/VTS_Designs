@@ -21,10 +21,21 @@
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
 
+      <input type="hidden" name="is_draft" id="is_draft" value="false">
       <label class="form_label">Project Images</label>
-      <div class="image_upload_box">
-        <input type="file" name="images" multiple>
-        <small>Upload new images</small>
+      <div id="edit-drop-area" class="image_upload_box">
+        <p><strong>Click or drop to upload new images</strong></p>
+        <input type="file"
+              id="editFileInput"
+              name="images"
+              multiple
+              hidden>
+        <div id="oldImages" class="preview-wrapper">
+          {% for img in project.images.all %}
+            <img src="{{ img.image.url }}" class="preview-img">
+          {% endfor %}
+        </div>
+        <div id="newPreview" class="preview-wrapper"></div>
       </div>
 
       <div class="two_grid">
@@ -76,25 +87,40 @@
       </div>
 
       <div class="form_actions">
-  <button type="button" class="draft_btn" onclick="saveDraft()">Save as Draft</button>
+        {% if project.visibility == "private" %}
+          <button type="submit"
+                  name="action"
+                  value="draft"
+                  class="draft_btn">
+            Save as Draft
+          </button>
+        {% endif %}
 
-  <div class="right_actions">
-    <a href="{% url 'add_project' %}" class="cancel_link">Cancel</a>
-    <button type="submit" class="publish_btn">Update Project</button>
-  </div>
-</div>
+        <div class="right_actions">
+          <a href="{% url 'add_project' %}" class="cancel_link">Cancel</a>
 
+          {% if project.visibility == "private" %}
+            <button type="submit"
+                    name="action"
+                    value="publish"
+                    class="publish_btn">
+              Publish Project
+            </button>
+          {% else %}
+            <button type="submit"
+                  name="action"
+                  value="publish"
+                  class="publish_btn">
+            Update Project
+          </button>
+          {% endif %}
+        </div>
+      </div>
 
     </form>
 
   </div>
 
 </div>
-<script>
-function saveDraft(){
-  document.getElementById("is_draft").value = "true";
-  document.querySelector("form").submit();
-}
-</script>
-
+<script src="{% static 'js/edit_project.js' %}"></script>
 {% endblock %}

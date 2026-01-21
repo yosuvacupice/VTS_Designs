@@ -43,7 +43,8 @@
                 action="{% url 'add_project' %}"
                 enctype="multipart/form-data"
                 class="upload-box"
-                id="dashboardUploadForm">
+                id="dashboardUploadForm"
+                autocomplete="off">
                 {% csrf_token %}
                 <div class="upload-header">
                     <h3>Upload New Project</h3>
@@ -66,6 +67,7 @@
                         multiple
                         hidden>
                         <input type="hidden" name="visibility" value="public">
+                        <input type="hidden" name="from_dashboard" value="true">
                         <!-- IMAGE PREVIEW -->
                         <div id="dashboardPreview"></div>
                 </div>
@@ -86,6 +88,20 @@
                             <option>Mobile App</option>
                         </select>
                     </div>
+                </div>
+                <input type="hidden" name="action" id="dashboard_action" value="publish">
+                <div class="form_actions">
+                    <button type="submit"
+                            class="draft_btn"
+                            onclick="setDashboardAction('draft')">
+                        Save as Draft
+                    </button>
+
+                    <button type="submit"
+                            class="publish_btn"
+                            onclick="setDashboardAction('publish')">
+                        Publish Project
+                    </button>
                 </div>
             </form>
         </div>
@@ -159,21 +175,6 @@
                         </a>
                     </div>
                     {% empty %}
-                    <p>No candidates available</p>
-                {% endfor %}
-                                
-                {% for user in available_candidates %}
-                <div class="candidate-item">
-                    <img src="{% static 'img/header_user_profile.png' %}" alt="user">
-
-                    <div class="candidate-info">
-                        <strong>{{ user.username }}</strong>
-                        <small>UI/UX Designer</small>
-                    </div>
-
-                    <a href="{% url 'hire_profile' user.id %}" class="hire-btn">Hire</a>
-                </div>
-                {% empty %}
                     <p>No candidates available</p>
                 {% endfor %}
             </div>

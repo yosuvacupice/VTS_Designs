@@ -26,6 +26,7 @@ class Project(models.Model):
         choices=VISIBILITY_CHOICES,
         default='public'
     )
+    is_draft = models.BooleanField(default=False)
     license = models.CharField(
         max_length=50,
         choices=LICENSE_CHOICES,

@@ -649,6 +649,21 @@ input{
   display:none;
 }
 
+.preview_container{
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+.preview-img{
+  width:120px;
+  height:120px;
+  object-fit:cover;
+  border-radius:10px;
+  pointer-events:none;
+}
+
 .two_grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -781,6 +796,10 @@ input{
 
 .status.draft{
   color:orange;
+}
+
+.status.private{
+  color: var(--hot-pink-color);
 }
 
 .card_actions{

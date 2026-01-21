@@ -25,3 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
 });
+
+function setDashboardAction(action){
+  document.getElementById("dashboard_action").value = action;
+}

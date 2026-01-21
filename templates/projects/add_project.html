@@ -40,17 +40,17 @@
 
         <div>
           <label>Category</label>
-          <select name="category">
-            <option>Select category</option>
-            <option>UI Design</option>
-            <option>Mobile App</option>
-            <option>Web App</option>
+          <select name="category" required>
+              <option value="">Select category</option>
+              <option value="UI Design">UI Design</option>
+              <option value="Mobile App">Mobile App</option>
+              <option value="Web App">Web App</option>
           </select>
         </div>
       </div>
 
       <label>Description</label>
-      <textarea name="description" placeholder="Describe your project, inspiration, and design process..."></textarea>
+      <textarea name="description" required placeholder="Describe your project, inspiration, and design process..."></textarea>
 
       <label>Tags</label>
       <div class="tags_box">
@@ -95,10 +95,20 @@
       </div>
 
       <div class="form_actions">
-        <button type="button" class="draft_btn" onclick="saveDraft()">Save as Draft</button>
+        <button type="submit"
+                name="action"
+                value="draft"
+                class="draft_btn">
+          Save as Draft
+        </button>
         <div class="right_actions">
           <a href="#" class="cancel_link">Cancel</a>
-          <button type="submit" class="publish_btn">Publish Project</button>
+          <button type="submit"
+                  name="action"
+                  value="publish"
+                  class="publish_btn">
+            Publish Project
+          </button>
         </div>
       </div>
 
@@ -124,11 +134,15 @@
           <small>{{ project.created_at|timesince }} ago</small>
 
           <div class="recent_uploads_card_container">
+            {% if project.is_draft %}
+            <span class="status draft">Draft</span>
+          {% else %}
             {% if project.visibility == "public" %}
               <span class="status published">Published</span>
             {% else %}
-              <span class="status draft">Draft</span>
+              <span class="status private">Private</span>
             {% endif %}
+          {% endif %}
 
             <div class="card_actions">
               <a href="{% url 'edit_project' project.id %}"><i class="ri-edit-box-line"></i></a>

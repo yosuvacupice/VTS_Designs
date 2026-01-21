@@ -9,61 +9,87 @@ import re
 
 MAX_IMAGE_SIZE = 10 * 1024 * 1024
 
-
 @login_required
 @never_cache
 def add_project(request):
     if request.method == "POST":
-        is_draft = request.POST.get("is_draft")
+        action = request.POST.get("action")
+        from_dashboard = request.POST.get("from_dashboard")
         token = uuid.uuid4()
+
         images = request.FILES.getlist("images")
+        title = request.POST.get("title", "").strip()
+        category = request.POST.get("category", "").strip()
+        description = request.POST.get("description", "").strip()
+        visibility_input = request.POST.get("visibility", "public")
 
-        # ✅ DUPLICATE PUBLISH STOP
-        if token and Project.objects.filter(publish_token=token).exists():
-            return redirect("add_project")
+        recent_projects = Project.objects.filter(
+            user=request.user
+        ).order_by("-created_at")[:3]
 
-        if is_draft != "true" and not images:
-            recent_projects = Project.objects.filter(user=request.user).order_by("-created_at")[:3]
+        if not title:
             return render(request, "projects/add_project.html", {
                 "recent_projects": recent_projects,
-                "error": "Project image is required to publish the project"
+                "error": "Project title is required"
+            })
+
+        if not category:
+            return render(request, "projects/add_project.html", {
+                "recent_projects": recent_projects,
+                "error": "Category is required"
+            })
+
+        if action == "publish" and not from_dashboard and not description:
+            return render(request, "projects/add_project.html", {
+                "recent_projects": recent_projects,
+                "error": "Description is required"
+            })
+
+        if action == "publish" and not images:
+            return render(request, "projects/add_project.html", {
+                "recent_projects": recent_projects,
+                "error": "At least one image is required"
             })
 
         for img in images:
             if img.size > MAX_IMAGE_SIZE:
-                recent_projects = Project.objects.filter(user=request.user).order_by("-created_at")[:3]
                 return render(request, "projects/add_project.html", {
                     "recent_projects": recent_projects,
-                    "error": "Image size must be less than 10MB"
+                    "error": "Each image must be under 10MB"
                 })
 
-            visibility = (
-                "private"
-                if is_draft == "true"
-                else request.POST.get("visibility", "public")
-            )
+        if action == "draft":
+            is_draft = True
+            final_visibility = "private"
+        else:
+            is_draft = False
+            final_visibility = visibility_input
 
         project = Project.objects.create(
             user=request.user,
-            title=request.POST.get("title"),
-            category=request.POST.get("category"),
-            description=request.POST.get("description", ""),
+            title=title,
+            category=category,
+            description=description or "",
             tags=clean_tags(request.POST.get("tags", "")),
-            visibility=visibility,
+            visibility=final_visibility,
+            is_draft=is_draft,
             license=request.POST.get("license", "all"),
             allow_download=True if request.POST.get("allow_download") else False,
-            publish_token=token   # ✅ save token
+            publish_token=token
         )
 
         for img in images:
             ProjectImage.objects.create(project=project, image=img)
 
-        if is_draft == "true":
-            return redirect("add_project")
+        if not is_draft:
+            return redirect("project_profile", project.id)
 
-        return redirect("project_profile", project.id)
+        return redirect("add_project")
 
-    recent_projects = Project.objects.filter(user=request.user).order_by("-created_at")[:3]
+    recent_projects = Project.objects.filter(
+        user=request.user
+    ).order_by("-created_at")[:3]
+
     return render(request, "projects/add_project.html", {
         "recent_projects": recent_projects
     })
@@ -83,29 +109,46 @@ def clean_tags(raw_tags):
 @login_required
 def edit_project(request, id):
     project = get_object_or_404(Project, id=id, user=request.user)
+
     if request.method == "POST":
         images = request.FILES.getlist("images")
+        action = request.POST.get("action")
+
         for img in images:
             if img.size > MAX_IMAGE_SIZE:
                 return render(request, "projects/edit_project.html", {
                     "project": project,
                     "error": "Image size must be less than 10MB"
                 })
-        project.title = request.POST.get("title")
-        project.category = request.POST.get("category")
-        project.description = request.POST.get("description")
+
+        project.title = request.POST.get("title", "").strip()
+        project.category = request.POST.get("category", "").strip()
+        project.description = request.POST.get("description", "").strip()
         project.tags = clean_tags(request.POST.get("tags", ""))
-        project.visibility = request.POST.get("visibility")
-        project.license = request.POST.get("license")
-        project.allow_download = True if request.POST.get("allow_download") else False
+
+        if action == "publish":
+            project.visibility = "public"
+        else:
+            project.visibility = "private"
+
+        project.license = request.POST.get("license", project.license)
+        project.allow_download = bool(request.POST.get("allow_download"))
         project.save()
-        for img in images:
-            ProjectImage.objects.create(project=project, image=img)
+
+        if images:
+            project.images.all().delete()
+
+            for img in images:
+                ProjectImage.objects.create(project=project, image=img)
+
+        if project.visibility == "public":
+            return redirect("project_profile", project.id)
+
         return redirect("add_project")
+
     return render(request, "projects/edit_project.html", {
         "project": project
     })
-
 
 @login_required
 def delete_project(request, id):

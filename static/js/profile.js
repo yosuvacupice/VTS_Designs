@@ -22,3 +22,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
+
+function openLogoutPopup() {
+  document.getElementById("logout-popup").style.display = "flex";
+}
+
+function closeLogoutPopup() {
+  document.getElementById("logout-popup").style.display = "none";
+}
+
+function confirmLogout() {
+  window.location.href = "/logout/";
+}

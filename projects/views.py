@@ -6,6 +6,9 @@ from .models import Project, ProjectImage, HireInquiry
 from notifications.models import Notification
 import uuid
 import re
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from .models import Project, ProjectLike, ProjectAppreciation
 
 MAX_IMAGE_SIZE = 10 * 1024 * 1024
 
@@ -15,7 +18,6 @@ def add_project(request):
     if request.method == "POST":
         action = request.POST.get("action")
         from_dashboard = request.POST.get("from_dashboard")
-        token = uuid.uuid4()
 
         images = request.FILES.getlist("images")
         title = request.POST.get("title", "").strip()
@@ -59,11 +61,11 @@ def add_project(request):
                 })
 
         if action == "draft":
-            is_draft = True
+            final_visibility = "draft"
+        elif visibility_input == "private":
             final_visibility = "private"
         else:
-            is_draft = False
-            final_visibility = visibility_input
+            final_visibility = "public"
 
         project = Project.objects.create(
             user=request.user,
@@ -72,16 +74,14 @@ def add_project(request):
             description=description or "",
             tags=clean_tags(request.POST.get("tags", "")),
             visibility=final_visibility,
-            is_draft=is_draft,
             license=request.POST.get("license", "all"),
             allow_download=True if request.POST.get("allow_download") else False,
-            publish_token=token
         )
 
         for img in images:
             ProjectImage.objects.create(project=project, image=img)
 
-        if not is_draft:
+        if final_visibility == "public":
             return redirect("project_profile", project.id)
 
         return redirect("add_project")
@@ -126,10 +126,12 @@ def edit_project(request, id):
         project.description = request.POST.get("description", "").strip()
         project.tags = clean_tags(request.POST.get("tags", ""))
 
-        if action == "publish":
-            project.visibility = "public"
-        else:
+        if action == "draft":
+            project.visibility = "draft"
+        elif action == "private":
             project.visibility = "private"
+        else:
+            project.visibility = "public"
 
         project.license = request.POST.get("license", project.license)
         project.allow_download = bool(request.POST.get("allow_download"))
@@ -158,11 +160,12 @@ def delete_project(request, id):
 
 @login_required
 def project_profile(request, id):
-    all_public_projects = Project.objects.filter(
+    projects = Project.objects.filter(
         visibility="public"
-    ).select_related("user").prefetch_related("images").order_by("-created_at")
+    ).select_related("user").prefetch_related("images")
+
     return render(request, "projects/project_profile.html", {
-        "projects": all_public_projects
+        "projects": projects
     })
 
 @login_required
@@ -234,4 +237,68 @@ def hire_inquiry_detail(request, id):
     )
     return render(request, "projects/hire_inquiry_detail.html", {
         "inquiry": inquiry
+    })
+
+@login_required
+def toggle_like_project(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+
+    if project.visibility != "public":
+        return JsonResponse({"error": "Not allowed"}, status=403)
+
+    if project.user == request.user:
+        return JsonResponse({"error": "Cannot like your own project"}, status=400)
+
+    like, created = ProjectLike.objects.get_or_create(
+        user=request.user,
+        project=project
+    )
+
+    if not created:
+        like.delete()
+        liked = False
+    else:
+        liked = True
+        Notification.objects.create(
+            user=project.user,
+            sender=request.user,
+            text=f"{request.user.username} liked your project '{project.title}'"
+        )
+
+    return JsonResponse({
+        "liked": liked,
+        "likes_count": project.likes.count()
+    })
+
+
+@login_required
+def toggle_appreciate_project(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+
+    if project.visibility != "public":
+        return JsonResponse({"error": "Not allowed"}, status=403)
+
+    if project.user == request.user:
+        return JsonResponse({"error": "Cannot appreciate your own project"}, status=400)
+
+    appreciation, created = ProjectAppreciation.objects.get_or_create(
+        user=request.user,
+        project=project
+    )
+
+    if not created:
+        appreciation.delete()
+        appreciated = False
+    else:
+        appreciated = True
+
+        Notification.objects.create(
+            user=project.user,
+            sender=request.user,
+            text=f"{request.user.username} appreciated your project '{project.title}'"
+        )
+
+    return JsonResponse({
+        "appreciated": appreciated,
+        "appreciations_count": project.appreciations.count()
     })

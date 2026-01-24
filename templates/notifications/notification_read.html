@@ -9,8 +9,8 @@
 
   <div class="notification_card">
     <p class="notification_text">
-      {{ notification.text }}
-    </p>
+      {{ notification.text|linebreaksbr }}
+    </p>  
 
     <small class="time">Time: 
       {{ notification.created_at|timesince }} ago

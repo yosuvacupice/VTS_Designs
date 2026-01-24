@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | VTS Designs</title>
+    <title>Admin Login | VTS Designs</title>
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
     <link rel="icon" type="image/png" href="{% static 'img/favicon_image.png' %}">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -14,7 +14,7 @@
 <div class="login-wrapper">
     <div class="login-box">
 
-        <h2 class="login-title">User Login</h2>
+        <h2 class="login-title">Admin Login</h2>
 
         {% if error %}
             <p style="color:red;text-align:center">{{ error }}</p>
@@ -36,15 +36,17 @@
 
             <div class="password-wrapper">
                 <input
-                type="password"
-                name="password"
-                id="password"
-                placeholder="Enter your Password"
-                minlength="8"
-                maxlength="20"
-                required
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="Enter your Password"
+                    minlength="8"
+                    maxlength="20"
+                    required
                 >
-                <i class="ri-eye-line toggle-password" id="toggleIcon" onclick="togglePassword()"></i>
+                <i class="ri-eye-line toggle-password"
+                   id="toggleIcon"
+                   onclick="togglePassword()"></i>
             </div>
 
             <div class="login-btn-wrapper">
@@ -71,5 +73,6 @@ function togglePassword() {
     }
 }
 </script>
+
 </body>
 </html>

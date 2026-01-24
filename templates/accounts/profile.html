@@ -59,11 +59,29 @@
       + Add Custom Section
     </button>
 
-    <button type="submit" class="profile_submit">
-      Submit
-    </button>
+    <div class="profile_actions_1">
+      <button type="button" class="logout_btn" onclick="openLogoutPopup()">
+        Logout
+      </button>
+
+      <button type="submit" class="profile_submit">
+        Submit
+      </button>
+    </div>
 
   </form>
+
+  <!-- LOGOUT POPUP -->
+  <div id="logout-popup" class="logout_popup">
+    <div class="logout_popup_box">
+      <p>Do you want to log out?</p>
+
+      <div class="logout_actions">
+        <button type="button" onclick="confirmLogout()" class="yes_btn">Yes</button>
+        <button type="button" onclick="closeLogoutPopup()" class="no_btn">No</button>
+      </div>
+    </div>
+  </div>
 
 </div>
 <script src="{% static 'js/profile.js' %}"></script>

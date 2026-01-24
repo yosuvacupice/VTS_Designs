@@ -10,7 +10,7 @@
   <div class="notification_item {% if not note.is_read %}unread{% endif %}">
     <p>
       <i class="ri-user-3-fill notify-icon"></i>
-      <strong>{{ note.sender.username }}</strong> sent you a hire request
+      {{ note.text|truncatechars:60 }}
     </p>
     <small>{{ note.created_at|timesince }} ago</small>
   </div>

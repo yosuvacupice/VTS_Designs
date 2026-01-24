@@ -929,15 +929,29 @@ input{
 
 .project_overlay{
   position:absolute;
-  inset:0;
-  top: 80%;
-  left: 10px;
+  left:10px;
+  right:10px;
+  bottom:55px;
+
+  background: rgba(0,0,0,0.55); /* 🔥 IMPORTANT */
+  backdrop-filter: blur(4px);   /* modern look */
+
+  padding:8px 10px;
+  border-radius:10px;
+
   opacity:0;
   display:flex;
-  align-items: center;
-  gap: 5px;
-  flex-wrap: wrap;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+
   transition:0.3s;
+}
+
+.project_overlay h4,
+.project_overlay p,
+.project_overlay small{
+  color:#fff;
 }
 
 .project_overlay h4{
@@ -959,6 +973,46 @@ input{
 .project_item:hover .project_overlay{
   opacity:1;
 }
+
+/* ===== LIKE & APPRECIATE ===== */
+.project_actions{
+  position:absolute;
+  bottom:10px;
+  left:10px;
+  display:flex;
+  gap:10px;
+}
+
+.project_actions button{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  background:#fff;
+  border:none;
+  padding:6px 10px;
+  border-radius:20px;
+  cursor:pointer;
+  font-size:14px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.15);
+  transition:0.2s;
+}
+
+.project_actions button:hover{
+  transform:scale(1.05);
+}
+
+/* ❤️ LIKE ACTIVE */
+.like-btn.active{
+  background:#ffe6ea;
+  color:#e60023;
+}
+
+/* 👏 APPRECIATE ACTIVE */
+.appreciate-btn.active{
+  background:#fff3d6;
+  color:#ff9800;
+}
+
 
 @media (max-width: 767px){
   .profile_page{
@@ -1489,4 +1543,72 @@ input{
 
 .search-results div:hover {
     background: #f5f5f5;
+}
+
+/* ================= profile.html(logout button) ================= */
+.logout_btn {
+  margin-top: 20px;
+  background: #333;
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.logout_btn:hover {
+  background: #000;
+}
+
+.logout_popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.logout_popup_box {
+  background: #fff;
+  padding: 30px;
+  border-radius: 16px;
+  text-align: center;
+  width: 300px;
+}
+
+.logout_actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.yes_btn {
+  background: linear-gradient(to right,#ff8a00,#ff006a);
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.no_btn {
+  background: #ddd;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.profile_actions_1 {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 25px;
+}
+
+.profile_actions_1 button {
+  flex: 1;
 }

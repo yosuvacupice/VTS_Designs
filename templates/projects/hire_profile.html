@@ -20,10 +20,12 @@
         </div>
       </div>
 
-      <a href="{% url 'hire_now' profile_user.id %}" class="hire_now_btn">
+      {% if request.user.is_staff %}
+        <a href="{% url 'hire_now' profile_user.id %}" class="hire_now_btn">
           <img src="{% static 'img/header_user_profile.png' %}">
           Hire Now
-      </a>
+        </a>
+      {% endif %}
     </div>
     
     <div class="hire_project_image">

@@ -134,15 +134,15 @@
           <small>{{ project.created_at|timesince }} ago</small>
 
           <div class="recent_uploads_card_container">
-            {% if project.is_draft %}
-            <span class="status draft">Draft</span>
-          {% else %}
-            {% if project.visibility == "public" %}
-              <span class="status published">Published</span>
-            {% else %}
+            {% if project.visibility == "draft" %}
+              <span class="status draft">Draft</span>
+
+            {% elif project.visibility == "private" %}
               <span class="status private">Private</span>
+
+            {% elif project.visibility == "public" %}
+              <span class="status published">Public</span>
             {% endif %}
-          {% endif %}
 
             <div class="card_actions">
               <a href="{% url 'edit_project' project.id %}"><i class="ri-edit-box-line"></i></a>

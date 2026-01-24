@@ -87,34 +87,24 @@
       </div>
 
       <div class="form_actions">
-        {% if project.visibility == "private" %}
-          <button type="submit"
-                  name="action"
-                  value="draft"
-                  class="draft_btn">
-            Save as Draft
-          </button>
-        {% endif %}
-
-        <div class="right_actions">
-          <a href="{% url 'add_project' %}" class="cancel_link">Cancel</a>
-
-          {% if project.visibility == "private" %}
-            <button type="submit"
-                    name="action"
-                    value="publish"
-                    class="publish_btn">
-              Publish Project
-            </button>
-          {% else %}
-            <button type="submit"
-                  name="action"
-                  value="publish"
-                  class="publish_btn">
-            Update Project
-          </button>
-          {% endif %}
-        </div>
+        <button type="submit"
+                name="action"
+                value="draft"
+                class="draft_btn">
+          Save as Draft
+        </button>
+        <button type="submit"
+                name="action"
+                value="private"
+                class="draft_btn">
+          Save as Private
+        </button>
+        <button type="submit"
+                name="action"
+                value="publish"
+                class="publish_btn">
+          Publish Project
+        </button>
       </div>
 
     </form>

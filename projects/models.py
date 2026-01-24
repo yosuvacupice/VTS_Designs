@@ -6,34 +6,41 @@ class Project(models.Model):
     VISIBILITY_CHOICES = [
         ('public', 'Public'),
         ('private', 'Private'),
+        ('draft', 'Draft'),
     ]
+
     LICENSE_CHOICES = [
         ('all', 'All Rights Reserved'),
         ('free', 'Free to Use'),
     ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     category = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     tags = models.CharField(max_length=200, blank=True)
+
     publish_token = models.UUIDField(
         default=uuid.uuid4,
         unique=True,
         editable=False
     )
+
     visibility = models.CharField(
         max_length=20,
         choices=VISIBILITY_CHOICES,
-        default='public'
+        default='draft'
     )
-    is_draft = models.BooleanField(default=False)
+
     license = models.CharField(
         max_length=50,
         choices=LICENSE_CHOICES,
         default='all'
     )
+
     allow_download = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return self.title
 
@@ -60,3 +67,33 @@ class HireInquiry(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f"{self.sender} → {self.receiver}"
+
+class ProjectLike(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name="likes"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'project')
+
+    def __str__(self):
+        return f"{self.user} liked {self.project}"
+
+class ProjectAppreciation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name="appreciations"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'project')
+
+    def __str__(self):
+        return f"{self.user} appreciated {self.project}"

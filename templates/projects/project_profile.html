@@ -38,9 +38,11 @@
           Message
         </a>
 
-        <a href="{% url 'hire_profile' proj.user.id %}" class="hire_btn">
-          Hire
-        </a>
+        {% if request.user.is_staff %}
+          <a href="{% url 'hire_profile' proj.user.id %}" class="hire_btn">
+            Hire
+          </a>
+        {% endif %}
       </div>
     </div>
 
@@ -50,12 +52,13 @@
   <div class="profile_right">
     <div class="project_grid">
 
-      {% with proj.images.all|first as img %}
       <div class="project_item">
 
-        {% if img %}
-          <img src="{{ img.image.url }}" loading="lazy">
-        {% endif %}
+        {% with proj.images.all|first as img %}
+          {% if img %}
+            <img src="{{ img.image.url }}" loading="lazy">
+          {% endif %}
+        {% endwith %}
 
         <div class="project_overlay">
           <h4>{{ proj.title }}</h4>
@@ -63,8 +66,25 @@
           <small>By {{ proj.user.username }}</small>
         </div>
 
+        {% if request.user != proj.user %}
+        <div class="project_actions">
+
+          <button class="like-btn" data-id="{{ proj.id }}">
+            ❤️ <span id="like-count-{{ proj.id }}">
+              {{ proj.likes.count }}
+            </span>
+          </button>
+
+          <button class="appreciate-btn" data-id="{{ proj.id }}">
+            👏 <span id="appreciate-count-{{ proj.id }}">
+              {{ proj.appreciations.count }}
+            </span>
+          </button>
+
+        </div>
+        {% endif %}
+
       </div>
-      {% endwith %}
 
     </div>
   </div>
@@ -73,4 +93,5 @@
 
 {% endfor %}
 
+<script src="{% static 'js/project_profile.js' %}"></script>
 {% endblock %}
